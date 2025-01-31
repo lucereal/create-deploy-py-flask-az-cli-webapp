@@ -1,0 +1,12 @@
+
+az webapp create --resource-group flask-app-rg_test2_test6 --plan "testpythonflask111222333-test6-plan" --vnet "testpythonflask111222333-test6-vnet" --subnet "default" --name testpythonflask111222333-test6 --https-only true --multicontainer-config-file docker-compose.yml --multicontainer-config-type COMPOSE
+	
+	
+az webapp create --resource-group flask-app-rg_test2_test6 --plan "testpythonflask111222333-test6-plan" --name testpythonflask111222333-test6 
+
+az webapp create --resource-group flask-app-rg_test2_test6 --plan "testpythonflask111222333-test6-plan" --vnet "testpythonflask111222333-test6-vnet" --subnet "default" --name testpythonflask111222333-test6 --https-only true --multicontainer-config-file ../docker-compose.yml --multicontainer-config-type COMPOSE
+
+az webapp deploy --name testpythonflask111222333-test6 --resource-group flask-app-rg_test2_test6 --type zip --src-path ../deploy.zip
+
+powershell 
+Compress-Archive -Path ..\* -DestinationPath ..\deploy.zip -Force
