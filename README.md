@@ -1,10 +1,22 @@
-# Deploy a Python (Flask) web app to Azure App Service - Sample Application
+# Simple Flask Python API App
 
-This is the sample Flask application for the Azure Quickstart [Deploy a Python (Django or Flask) web app to Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python). For instructions on how to create the Azure resources and deploy the application to Azure, refer to the Quickstart article.
+This is a simple Flask Python API app that is used to learn how to create resources in Azure and deploy a Flask Python API app to Azure App Service.
 
-Sample applications are available for the other frameworks here:
+## Prerequisites
 
-* Django [https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart)
-* FastAPI [https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart)
+- Azure CLI - install and login to Azure CLI
+    - Validate you have an azure subscription
+- Python 3.12
 
-If you need an Azure account, you can [create one for free](https://azure.microsoft.com/en-us/free/).
+## Setup
+
+1. Clone the repository
+2. Run `.\setup-venv.bat` from the devops folderto create a virtual environment and install the dependencies
+3. Create `.env` file in the root of the repository with the following content:
+    ``` 
+    FLASK_APP=app.py
+    ```
+5. Validate app runs locally by running `flask run` in the root of the repository
+6. Create `.\config.bat` in the devops folder using the template in `devops/config.template.bat`
+7. Run `.\create-resources-local.bat` in the devops folder to create the Azure resources
+8. Run `.\deploy-app-local.bat` in the devops folder to deploy the app to Azure App Service
