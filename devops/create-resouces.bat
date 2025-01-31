@@ -18,11 +18,6 @@ echo Resource Group:  %RESOURCE_GROUP%
 echo Location:       %LOCATION%
 echo App Name:       %APP_NAME%
 echo App Plan Name:  %APP_NAME%-plan
-echo VNET Name:      %APP_NAME%-vnet
-echo Subnet Name:    %APP_NAME%-subnet
-echo ASE Name:       %APP_NAME%-ase
-echo VNET Range:     10.0.0.0/16
-echo Subnet Range:   10.0.0.0/24
 echo.
 
 :: Validate required variables
@@ -63,37 +58,6 @@ if /i "%CREATE_RG%"=="Y" (
     call az group create --name %RESOURCE_GROUP% --location %LOCATION%
 )
 
-:: Create Virtual Network and Subnet
-set /p CREATE_VNET="Create Virtual Network and Subnet? (Y/N): "
-if /i "%CREATE_VNET%"=="Y" (
-    echo Creating Virtual Network and Subnet...
-    call az network vnet create ^
-        --resource-group %RESOURCE_GROUP% ^
-        --name "%APP_NAME%-vnet" ^
-        --address-prefixes 10.0.0.0/16 ^
-        --subnet-name "%APP_NAME%-subnet" ^
-        --subnet-prefixes 10.0.0.0/24
-
-    echo Delegating subnet to Microsoft.Web/hostingEnvironments...
-    call az network vnet subnet update ^
-        --resource-group %RESOURCE_GROUP% ^
-        --vnet-name "%APP_NAME%-vnet" ^
-        --name "%APP_NAME%-subnet" ^
-        --delegations Microsoft.Web/serverFarms
-)
-
-:: Create App Service Environment
-set /p CREATE_ASE="Create App Service Environment (takes 20-30 minutes)? (Y/N): "
-if /i "%CREATE_ASE%"=="Y" (
-    echo Creating App Service Environment...
-    call az appservice ase create ^
-        --name "%APP_NAME%-ase" ^
-        --resource-group %RESOURCE_GROUP% ^
-        --vnet-name "%APP_NAME%-vnet" ^
-        --subnet "%APP_NAME%-subnet" ^
-        --kind asev3
-)
-
 :: Create App Service Plan
 set /p CREATE_PLAN="Create App Service Plan? (Y/N): "
 if /i "%CREATE_PLAN%"=="Y" (
@@ -102,7 +66,7 @@ if /i "%CREATE_PLAN%"=="Y" (
         --resource-group %RESOURCE_GROUP% ^
         --name "%APP_NAME%-plan" ^
         --location %LOCATION% ^
-        --sku B1 ^
+        --sku F1 ^
         --is-linux
 )
 
@@ -113,13 +77,15 @@ if /i "%CREATE_WEBAPP%"=="Y" (
     call az webapp create ^
         --resource-group %RESOURCE_GROUP% ^
         --plan "%APP_NAME%-plan" ^
-        --vnet "%APP_NAME%-vnet" ^
-        --subnet "%APP_NAME%-subnet" ^
         --name %APP_NAME% ^
         --https-only true ^
-        --multicontainer-config-file ../docker-compose.yml ^
-        --multicontainer-config-type COMPOSE
+        --runtime "PYTHON:3.12"
 
+    echo Configuring app settings...
+    call az webapp config appsettings set ^
+        --resource-group %RESOURCE_GROUP% ^
+        --name %APP_NAME% ^
+        --settings SCM_DO_BUILD_DURING_DEPLOYMENT=1
 )
 
 echo Resource creation complete!

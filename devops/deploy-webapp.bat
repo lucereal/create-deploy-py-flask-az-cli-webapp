@@ -49,19 +49,32 @@ if "%APP_NAME%"=="" (
 echo Selecting subscription...
 call az account set --subscription %SUBSCRIPTION_ID%
 
-:: Deploy the application code
-echo Creating deployment package...
-powershell Compress-Archive -Path ..\* -DestinationPath ..\deploy.zip -Force
+:: Create deployment package with confirmation
+set /p CREATE_ZIP="Do you want to create the deployment package? (Y/N): "
+if /i "%CREATE_ZIP%"=="Y" (
+    echo Creating deployment package...
+    powershell Compress-Archive -Path ..\* -DestinationPath ..\deploy.zip -Force
+) else (
+    echo Skipping deployment package creation.
+)
 
-echo Deploying application code...
-call az webapp deploy ^
-  --name %APP_NAME% ^
-  --resource-group %RESOURCE_GROUP% ^
-  --type zip ^
-  --src-path ..\deploy.zip
+:: Deploy with confirmation
+set /p DEPLOY="Do you want to deploy the application code? (Y/N): "
+if /i "%DEPLOY%"=="Y" (
+    echo Deploying application code...
+    call az webapp deploy ^
+      --name %APP_NAME% ^
+      --resource-group %RESOURCE_GROUP% ^
+      --type zip ^
+      --src-path ..\deploy.zip
+) else (
+    echo Skipping deployment.
+)
 
-:: Clean up deployment package
-del .\deploy.zip
+:: Clean up deployment package if it exists
+if exist ..\deploy.zip (
+    del ..\deploy.zip
+)
 
 echo Deployment complete!
 pause 
