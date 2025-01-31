@@ -1,13 +1,13 @@
 from flask import Flask
 from .controllers.main_controller import main
-from .controllers.hello_controller import hello
+from .controllers.email_controller import email
 
 def create_app():
     app = Flask(__name__)
     
     # Register blueprints
     app.register_blueprint(main)
-    app.register_blueprint(hello)
+    app.register_blueprint(email)
     
     return app
 
