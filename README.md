@@ -15,9 +15,10 @@ This is a simple Flask Python API app that is used to learn how to create resour
 2. Run `.\setup-venv.bat` from the devops folderto create a virtual environment and install the dependencies
 3. Create `.env` file in the root of the repository with the following content:
     ``` 
-    FLASK_APP=app.py
+    FLASK_APP=src.app:create_app()
+    ENABLE_ORYX_BUILD=1
     ```
-5. Validate app runs locally by running `flask run` in the root of the repository
+5. Make sure venv is activated and run app locally by running `flask run` in the root of the repository
 6. Create `.\config.bat` in the devops folder using the template in `devops/config.template.bat`
 7. Run `.\create-resources.bat` in the devops folder to create the Azure resources
 8. Run `.\deploy-webapp.bat` in the devops folder to deploy the app to Azure App Service
