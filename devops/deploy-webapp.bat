@@ -53,8 +53,7 @@ call az account set --subscription %SUBSCRIPTION_ID%
 set /p CREATE_ZIP="Do you want to create the deployment package? (Y/N): "
 if /i "%CREATE_ZIP%"=="Y" (
     echo Creating deployment package...
-    powershell -Command "Get-Item -Path '..\src', '..\requirements.txt', '..\startup.py', '..\app.py', '..\venv' | Compress-Archive -DestinationPath ..\deploy.zip -Force"
-
+    python create_zip.py
 ) else (
     echo Skipping deployment package creation.
 )
