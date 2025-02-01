@@ -85,7 +85,12 @@ if /i "%CREATE_WEBAPP%"=="Y" (
     call az webapp config appsettings set ^
         --resource-group %RESOURCE_GROUP% ^
         --name %APP_NAME% ^
-        --settings SCM_DO_BUILD_DURING_DEPLOYMENT=1
+        --settings SCM_DO_BUILD_DURING_DEPLOYMENT=1 
+        
+    call az webapp config set ^
+        --resource-group %RESOURCE_GROUP% ^
+        --name %APP_NAME% ^
+        --startup-file "gunicorn --bind 0.0.0.0:8000 startup:app" 
 )
 
 echo Resource creation complete!
